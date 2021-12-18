@@ -27,7 +27,6 @@ raw_data = pd.read_csv(path, delim_whitespace=True,\
 # "column": ["nSeq", "DI", "CH9A", "CH9B", "%SpO2"]
 
 
-
 # fs = 1000
 #
 # rest1 = raw_data[30*fs:60*fs, :]
