@@ -1,0 +1,25 @@
+# Cross-validation
+values = features.drop('state', axis=1)
+states = features['state']
+
+ss = ShuffleSplit(n_splits=2, test_size=0.35, random_state=0)
+
+for train_index, test_index in ss.split(values):
+    train = values.iloc[train_index]
+    train_states = states.iloc[train_index]
+    test = values.iloc[test_index]
+    test_states = states.iloc[test_index]
+
+
+
+# Simple Division - 60/40
+train, test = train_test_split(features, test_size=0.2, shuffle=True)  # train -> 60% | test -> 40%
+
+for clf in (clf_randforest, clf_naive, clf_knn, clf_neural, clf_svm):
+    clf.fit(train.drop('state', axis=1), train['state'])
+
+    predicted = clf.predict(test.drop('state', axis=1))
+    disp = metrics.ConfusionMatrixDisplay.from_predictions(test['state'], predicted)
+    disp.figure_.suptitle(clf)
+
+    plt.show()

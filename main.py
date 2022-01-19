@@ -45,13 +45,18 @@ def get_features(df):
 
     df = df.drop(df[df['state'] == 'default'].index)
 
-    data_separated = np.array_split(df, round(len(df) / (window_size * fs)))
+    df_rest = df[df['state'] == 'rest_pressure']
+    df_medium = df[df['state'] == 'medium_pressure']
+    df_high = df[df['state'] == 'high_pressure']
 
-    # Write features
-    for block in data_separated:
-        features = tsfel.time_series_features_extractor(cfg, block[['CH9A', 'CH9B']], fs=fs)
-        features.to_csv(f, header=False, index=False, line_terminator=',')
-        f.write(block.iloc[0]['state'] + '\n')
+    for df_state in (df_rest, df_medium, df_high):
+        data_separated = np.array_split(df_state, round(len(df_state) / (window_size * fs)))
+
+        # Write features
+        for block in data_separated:
+            features = tsfel.time_series_features_extractor(cfg, block[['CH9A', 'CH9B']], fs=fs)
+            features.to_csv(f, header=False, index=False, line_terminator=',')
+            f.write(block.iloc[0]['state'] + '\n')
 
 
 path_pedro = 'data pedro/opensignals_spo2_pedro_2021-12-03_15-16-47.txt'
@@ -67,8 +72,8 @@ path_diogo = 'data pedro/opensignals_spo2_diogo_2021-12-03_15-08-49.txt'
 
 fs = 1000
 window_size = 1
-cfg = tsfel.get_features_by_domain('temporal')
-f = open('features_temporal.csv', 'w')
+cfg = tsfel.get_features_by_domain()
+f = open('features_tudo.csv', 'w')
 
 data_pedro = pd.read_csv(path_pedro, delim_whitespace=True,
                          header=0, names=["nSeq", "DI", "CH9A", "CH9B", "SpO2"],
@@ -91,5 +96,7 @@ f.write(header_string + 'state' + '\n')
 get_features(data_pedro)
 get_features(data_rodrigo)
 get_features(data_diogo)
+
+# ver package tsfresh
 
 f.close()
