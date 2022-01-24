@@ -27,7 +27,7 @@ features['state'] = features['state'].apply(lambda x: dic_state[x])
 
 # Filter the features with high correlation
 state_corr = features.corr()['state'].abs()
-relevant_features = state_corr[state_corr > 0.3]
+relevant_features = state_corr[state_corr > 0.5]
 
 feat_names = []
 for col in relevant_features.index:
