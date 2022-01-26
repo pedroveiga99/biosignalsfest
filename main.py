@@ -35,7 +35,7 @@ def is_high(x):
             (361 * fs < x) & (x < 389 * fs))
 
 
-def get_features(df):
+def get_features(df, person):
     # Separate the diferent situations (1s buffer in the end and beginning)
     df['state'] = 'default'
     df['state'] = np.where(is_rest(df['nSeq']), 'rest_pressure', df['state'])
@@ -60,7 +60,7 @@ def get_features(df):
 
             features = tsfel.time_series_features_extractor(cfg, block[['CH9A', 'CH9B']], fs=fs)
             features.to_csv(f, header=False, index=False, line_terminator=',')
-            f.write(block.iloc[0]['state'] + '\n')
+            f.write(block.iloc[0]['state'] + ',' + person + '\n')
 
 
 path_pedro = 'data pedro/opensignals_spo2_pedro_2021-12-03_15-16-47.txt'
@@ -75,9 +75,9 @@ path_diogo = 'data pedro/opensignals_spo2_diogo_2021-12-03_15-08-49.txt'
 # "column": ["nSeq", "DI", "CH9A", "CH9B", "%SpO2"]
 
 fs = 1000
-window_size = 1
-cfg = tsfel.get_features_by_domain('temporal')
-f = open('features/features_temporal_normalized.csv', 'w')
+window_size = 3
+cfg = tsfel.get_features_by_domain('spectral')
+f = open('features/features_spectral_3s_normalized.csv', 'w')
 
 data_pedro = pd.read_csv(path_pedro, delim_whitespace=True,
                          header=0, names=["nSeq", "DI", "CH9A", "CH9B", "SpO2"],
@@ -95,11 +95,11 @@ header_string = ''
 header = tsfel.time_series_features_extractor(cfg, temp[0][['CH9A', 'CH9B']], fs=fs)
 for col in header.columns:
     header_string += col + ','
-f.write(header_string + 'state' + '\n')
+f.write(header_string + 'state,person' + '\n')
 
-get_features(data_pedro)
-get_features(data_rodrigo)
-get_features(data_diogo)
+get_features(data_pedro, 'pedro')
+get_features(data_rodrigo, 'rodrigo')
+get_features(data_diogo, 'diogo')
 
 # ver package tsfresh
 

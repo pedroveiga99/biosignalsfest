@@ -13,8 +13,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import cross_val_score
 
 
-
-features = pd.read_csv('features_tudo.csv')
+features = pd.read_csv('features/features_tudo_normalized.csv')
 
 dic_state = {
     'rest_pressure': 1,
@@ -22,27 +21,27 @@ dic_state = {
     'high_pressure': 3
 }
 
-# Convert the pressure states to numbers
-features['state'] = features['state'].apply(lambda x: dic_state[x])
+# # Convert the pressure states to numbers
+# features['state'] = features['state'].apply(lambda x: dic_state[x])
 
-# Filter the features with high correlation
-state_corr = features.corr()['state'].abs()
-relevant_features = state_corr[state_corr > 0.5]
+# # Filter the features with high correlation
+# state_corr = features.corr()['state'].abs()
+# relevant_features = state_corr[state_corr > 0.5]
 
-feat_names = []
-for col in relevant_features.index:
-    feat_names.append(col)
-
-features = features[feat_names]  # Only data from the relevant features
+# feat_names = []
+# for col in relevant_features.index:
+#     feat_names.append(col)
+#
+# features = features[feat_names]  # Only data from the relevant features
 
 # Classificadores
-clf_randforest = RandomForestClassifier(max_depth=7)
+clf_randforest = RandomForestClassifier()
 clf_knn = KNeighborsClassifier(n_neighbors=5, weights='distance')
 clf_naive = GaussianNB()
-clf_neural = MLPClassifier(activation='logistic')
+clf_neural = MLPClassifier()
 clf_svm = svm.SVC()
 
-train, test = train_test_split(features, test_size=0.2, shuffle=True)  # train -> 60% | test -> 40%
+train, test = train_test_split(features, test_size=0.2, shuffle=True, stratify=True)  # train -> 60% | test -> 40%
 
 for clf in (clf_randforest, clf_naive, clf_knn, clf_neural, clf_svm):
     clf.fit(train.drop('state', axis=1), train['state'])
