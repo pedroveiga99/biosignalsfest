@@ -73,11 +73,14 @@ path_diogo = 'data pedro/opensignals_spo2_diogo_2021-12-03_15-08-49.txt'
 # "sensor": ["SpO2", "SpO2", "%SpO2"],
 # "label": ["CH9A", "CH9B", "%SpO2"],
 # "column": ["nSeq", "DI", "CH9A", "CH9B", "%SpO2"]
+# CH9A : Red light channel
+# CH9B : IR light channel
 
 fs = 1000
 window_size = 3
 cfg = tsfel.get_features_by_domain('spectral')
-f = open('features/features_spectral_3s_normalized.csv', 'w')
+# f = open('features/features_spectral_3s_normalized.csv', 'w')
+f = open('test.txt','w')
 
 data_pedro = pd.read_csv(path_pedro, delim_whitespace=True,
                          header=0, names=["nSeq", "DI", "CH9A", "CH9B", "SpO2"],

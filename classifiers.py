@@ -13,7 +13,8 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import cross_val_score
 
 
-features = pd.read_csv('features/features_tudo_normalized.csv')
+features = pd.read_csv('features/features_tudo_3s.csv')
+features = features.drop('person', axis=1)
 
 dic_state = {
     'rest_pressure': 1,
@@ -41,7 +42,7 @@ clf_naive = GaussianNB()
 clf_neural = MLPClassifier()
 clf_svm = svm.SVC()
 
-train, test = train_test_split(features, test_size=0.2, shuffle=True, stratify=True)  # train -> 60% | test -> 40%
+train, test = train_test_split(features, test_size=0.3, shuffle=True)  # train -> 60% | test -> 40%
 
 for clf in (clf_randforest, clf_naive, clf_knn, clf_neural, clf_svm):
     clf.fit(train.drop('state', axis=1), train['state'])
